@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'content' %}
+
+
+
+<section class="section-content padding-y bg">
+	<div class="container">
+
+		<!-- ============================ COMPONENT 1 ================================= -->
+		<div class="card">
+			<div class="row no-gutters">
+				<aside class="col-md-6">
+					<article class="gallery-wrap">
+						<div class="img-big-wrap">
+							<a href="#"><img src="{{single_product.Images.url}}"></a>
+						</div> <!-- img-big-wrap.// -->
+
+					</article> <!-- gallery-wrap .end// -->
+				</aside>
+				<main class="col-md-6 border-left">
+					<form action="{% url 'add_cart' single_product.id %}" method="POST">
+						{% csrf_token %}
+
+						<article class="content-body">
+
+							<h2 class="title">{{ single_product.product_name }}</h2>
+
+							<div class="mb-3">
+								<var class="price h4">${{ single_product.price }}</var>
+							</div>
+
+							<p>{{ single_product.description }}</p>
+
+
+							<hr>
+							<div class="row">
+								<div class="item-option-select">
+									<h6>Type</h6>
+									<select name="type" class="form-control" required>
+										<option value="" disabled selected> Select</option>
+										{% for i in single_product.variation_set.types %}
+										<option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst}}</option>
+										{% endfor %}
+
+									</select>
+								</div>
+							</div>
+							<div class="row">
+								<div class="item-option-select">
+									<h6>Size</h6>
+									<select name="sizes" class="form-control" required>
+										<option value="" disabled selected> Select</option>
+										{% for i in single_product.variation_set.sizes %}
+										<option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst}}</option>
+										{% endfor %}
+
+									</select>
+								</div>
+							</div>
+							<hr>
+							{% if single_product.stock <= 0 %} <h4 class="text-danger">Out of stock</h4>
+								{% else %}
+								<button type="submit" class="btn  btn-primary"> <span class="text">Add to cart</span> <i
+										class="fas fa-shopping-cart"></i></button>
+								{% endif %}
+						</article> <!-- product-info-aside .// -->
+					</form>
+				</main> <!-- col.// -->
+			</div> <!-- row.// -->
+		</div> <!-- card.// -->
+		<!-- ============================ COMPONENT 1 END .// ================================= -->
+
+		<br>
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<header class="section-heading">
+					<h3>Customer Reviews</h3>
+
+				</header>
+
+				<article class="box mb-4">
+					<div class="icontext w-200">
+						<div class="text">
+							{% for review in reviews %}
+
+							<div class="review__attribute m-3">
+
+								<h8>{{review.review_text}}</h8><br><br>
+								<h6>Review by: {{review.user.first_name}}</h6><br>
+
+							</div>
+							{% endfor %}
+
+							{% if request.user.is_authenticated %}
+
+
+
+
+							<form action="{% url 'product_review' single_product.id %}" method="POST">
+								{% csrf_token %}
+
+
+								<div class="review-fieldset col-6">
+									<h5>Write Review</h5>
+								</div>
+								<div class="review_form_field">
+									<div class="input__box">
+										{{form.review_text}}
+
+									</div><br>
+
+									<div class="review-form-actions">
+										<button type='submit' class="btn  btn-primary">Submit Review</button>
+									</div>
+								</div>
+						</div>
+						</form>
+						{% else %}
+						<a href="">You must signin for write review</a>
+						{% endif %}
+
+					</div>
+		</div>
+		<div class="mt-3">
+		
+		</div>
+		</article>
+		</form>
+		</class>
+
+	</div> <!-- col.// -->
+	</div> <!-- row.// -->
+
+
+	</div> <!-- container .//  -->
+</section>
+
+{% endblock %}

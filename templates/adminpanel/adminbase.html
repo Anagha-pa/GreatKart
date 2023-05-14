@@ -1,0 +1,196 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+
+<!-- Mirrored from smartshop.websitelayout.net/admin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 03 Jan 2023 16:00:16 GMT -->
+
+<head>
+    <!-- metas -->
+    <meta charset="utf-8" />
+    <meta name="author" content="Chitrakoot Web" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="keywords" content="admin,dashboard" />
+    <meta name="description" content="Smartshop - Responsive eCommerce Admin Dashboard" />
+
+    <!-- title  -->
+<!-- 
+    {% block title %} SMART SHOP{% endblock %} -->
+
+    <!-- favicon -->
+    <link rel="shortcut icon" href="{% static 'custom_admin/img/logos/logo.png' %}" />
+    <link rel="apple-touch-icon" href="{% static 'custom_admin/img/logos/apple-touch-icon-57x57.png' %}" />
+    <link rel="apple-touch-icon" sizes="72x72" href="{% static 'custom_admin/img/logos/apple-touch-icon-72x72.png' %}" />
+    <link rel="apple-touch-icon" sizes="114x114" href="{% static 'custom_admin/img/logos/apple-touch-icon-114x114.png' %}" />
+
+    <!-- common plugins -->
+    <link rel="stylesheet" href="{% static 'custom_admin/plugins/bootstrap/css/bootstrap.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'custom_admin/plugins/font-awesome/css/font-awesome.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'custom_admin/plugins/icomoon/style.css' %}" />
+    <link rel="stylesheet" href="{% static 'custom_admin/plugins/uniform/css/default.css' %}" />
+    <link rel="stylesheet" href="{% static 'custom_admin/plugins/switchery/switchery.min.css' %}" />
+
+    <!-- theme core css -->
+    <link rel="stylesheet" href="{% static 'custom_admin/css/styles.css' %}" />
+
+</head>
+
+<body>
+
+    <!-- PAGE LOADING
+    ================================================== -->
+    <div id="preloader"></div>
+
+    <!-- PAGE CONTAINER
+    ================================================== -->
+    <div class="page-container">
+
+        <!-- PAGE SIDEBAR
+        ================================================== -->
+        <div class="page-sidebar">
+            <a href="index.html" class="navbar-brand logodefault"><img id="logo"
+                src="{% static 'home/img/logos/logo.png' %}" alt=""></a>
+            <div class="page-sidebar-inner">
+                <div class="page-sidebar-menu">
+                     <ul class="accordion-menu">
+                        
+                            <a href=""><i
+                                    class="menu-icon icon-inbox"></i><span>user</span><i
+                                    class="accordion-icon fa fa-angle-left"></i>
+                                </a>
+                             
+                               
+                              
+
+
+                        
+                        </li>
+                       
+                        <li>
+                            <a href="{% url 'admin_change_password'  %}"> <i class="menu-icon icon-public"></i><span>change passsword</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'adminlogin'  %}"> <i class="menu-icon icon-public"></i><span>Logout</span>
+                            </a>
+                        </li>
+                    </ul> 
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE CONTENT
+        ================================================== -->
+        <div class="page-content">
+
+            <!-- PAGE HEADER
+            ================================================== -->
+            <div class="page-header">
+                <div class="search-form">
+                    <form action="#" method="GET">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control search-input"
+                                placeholder="Type something...">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" id="close-search" type="button"><i
+                                        class="icon-close"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                </div>
+                <nav class="navbar navbar-default">
+                    <div class="container-fluid">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <div class="logo-sm">
+                                <a href="#" id="sidebar-toggle-button"><i class="fa fa-bars"></i></a>
+                                <a class="logo-box" href="index.html"><img
+                                        src="{% static '/admin/img/logos/logo-footer.png' %}" class="logo"
+                                        alt="..."></a>
+                            </div>
+                            <button type="button" class="navbar-toggle collapsed" data-bs-toggle="collapse"
+                                data-bs-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                                <i class="fa fa-angle-down"></i>
+                            </button>
+                        </div>
+
+                        <!-- Collect the nav links, forms, and other content for toggling -->
+
+                        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                            <ul class="nav navbar-nav">
+                                <li><a href="#" id="collapsed-sidebar-toggle-button"><i class="fa fa-bars"></i></a></li>
+                                <li><a href="#" id="toggle-fullscreen"><i class="fa fa-expand"></i></a></li>
+                                <li><a href="#" id="search-button"><i class="fa fa-search"></i></a></li>
+                            </ul>
+                            <ul class="nav navbar-nav navbar-right">
+
+
+                                <li class="dropdown user-dropdown">
+                                    <img src="{% static 'custom_admin/img/avatars/user-dropdown.jpg' %}" alt="..."
+                                        class="rounded-circle">
+
+                                </li>
+                            </ul>
+                        </div>
+                        <!-- /.navbar-collapse -->
+                    </div>
+                    <!-- /.container-fluid -->
+                </nav>
+            </div>
+            <!-- {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                <li {% if message.tags %} class="{{ message.tags }}" style="color: rgb(0, 0, 0);font-size:xx-large   "{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %} -->
+
+            {% block content %}
+
+            {% endblock %}
+
+
+            <!-- SCROLL TO TOP
+    ================================================== -->
+            <a href="#" class="scroll-to-top"><i class="fas fa-angle-up" aria-hidden="true"></i></a>
+
+            <!-- ALL JS INCLUDE
+    ================================================== -->
+
+            <!-- jQuery -->
+            <script src="{% static 'custom_admin/plugins/jquery/jquery.min.js' %}"></script>
+
+            <!-- popper -->
+            <script src="{% static 'custom_admin/plugins/popper/js/popper.min.js' %}"></script>
+
+            <!-- bootstrap -->
+            <script src="{% static 'custom_admin/plugins/bootstrap/js/bootstrap.min.js' %}"></script>
+
+            <!-- slimscroll -->
+            <script src="{% static 'custom_admin/plugins/jquery-slimscroll/jquery.slimscroll.min.js' %}"></script>
+
+            <!-- uniform -->
+            <script src="{% static 'custom_admin/plugins/uniform/js/jquery.uniform.standalone.js' %}"></script>
+
+            <!-- switchery -->
+            <script src="{% static 'custom_admin/plugins/switchery/switchery.min.js' %}"></script>
+
+            <!-- apex chart -->
+            <script src="{% static 'custom_admin/plugins/apexcharts/apexcharts.js' %}"></script>
+
+            <!-- chart js -->
+            <script src="{% static 'custom_admin/js/pages/chart.js' %}"></script>
+
+            <!-- theme core scripts -->
+            <script src="{% static 'custom_admin/js/main.js' %}"></script>
+
+            <!-- all js include end -->
+            <script src="{% static 'custom_admin/js/popup.js' %}"></script>
+
+</body>
+
+
+<!-- Mirrored from smartshop.websitelayout.net/admin/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 03 Jan 2023 16:00:28 GMT -->
+
+</html>

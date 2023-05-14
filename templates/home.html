@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'content' %}
+
+
+
+<!-- section-header.// -->
+<!-- ========================= SECTION MAIN ========================= -->
+<section class="section-intro padding-y-sm">
+	<div class="container">
+
+		<div class="intro-banner-wrap">
+			<img src="{% static 'images/banners/1.png' %}" style="height:500px;width:1000px;margin-left:10%;"
+				class="img-fluid rounded">
+		</div>
+
+	</div> <!-- container //  -->
+</section>
+<!-- ========================= SECTION MAIN END// ========================= -->
+
+<!-- ========================= SECTION  ========================= -->
+<section class="section-name padding-y-sm">
+	<div class="container">
+
+		<header class="section-heading">
+			<a href="{% url 'store'  %}" class="btn btn-outline-primary float-right">See all</a>
+			<h3 class="section-title">Popular products</h3>
+		</header><!-- sect-heading -->
+
+
+		<div class="row">
+
+			{% for product in products %}
+                    <div class="col-md-4">
+                        <figure class="card card-product-grid">
+                            <div class="img-wrap">
+
+                                <a href="{% url 'product_detail' product.id %}"><img src="{{ product.Images.url }}"></a>
+
+                            </div> <!-- img-wrap.// -->
+                            <figcaption class="info-wrap">
+                                <div class="fix-height">
+
+                                    <a href="{{ product.get_url }}" class="title">{{ product.product_name }}</a>
+                                    <div cla ss="price-wrap mt-2">
+                                        <span class="price">${{ product.price }}</span>
+                                    </div> <!-- price-wrap.// -->
+                                </div>
+                                <a href="{% url 'add_cart' product.id %}" class="btn btn-block btn-primary">View Details</a>
+                            </figcaption>
+                        </figure>
+                    </div> <!-- col.// -->
+                    {% endfor %}
+
+		
+		</div> 
+
+	</div><!-- container // -->
+</section>
+<!-- ========================= SECTION  END// ========================= -->
+
+
+
+
+<!-- ========================= FOOTER ========================= -->
+
+<!-- ========================= FOOTER END // ========================= -->
+
+</body>
+
+</html>
+{% endblock %}

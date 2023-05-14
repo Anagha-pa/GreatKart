@@ -1,0 +1,378 @@
+{% extends 'adminpanel/adminbase.html' %}
+
+{% block content %}
+{% load static %}
+
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <p class="text-black mt-5 mb-5">
+                <!-- Welcome <b>{{user.first_name}}</b> -->
+            </p>
+        </div>
+    </div>
+    <!-- row -->
+    <div class="row">
+        <div class="col-md-3 mb-4 stretch-card transparent">
+            <div class="card card-tale tm-bg-primary-dark text-black text-center">
+                <div class="card-body">
+                    <h4 class="mb-4">Today's Orders</h4>
+                    <p class="mb-2">{{order_count_in_day}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4 stretch-card transparent">
+            <div class="card tm-bg-primary-dark text-black text-center">
+                <div class="card-body">
+                    <h4 class="mb-4">This Week's Orders</h4>
+                    <p class="fs-30 mb-2">{{order_count_in_week}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-4  stretch-card transparent">
+            <div class="card tm-bg-primary-dark text-black text-center">
+                <div class="card-body">
+                    <h4 class="mb-4">This Month's Orders</h4>
+                    <p class="fs-30 mb-2">{{order_count_in_month}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 stretch-card transparent">
+            <div class="card tm-bg-primary-dark text-black text-center">
+                <div class="card-body">
+                    <h4 class="mb-4">Number of Users</h4>
+                    <p class="fs-30 mb-2">{{number_of_users}}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Graphs -->
+
+    <div class="row tm-content-row">
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+            <div class="bg-white tm-block">
+                <h2 class="tm-block-title text-dark text-center">Order Details</h2>
+                <canvas id="orderChart" class="">></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+            <div class="bg-white tm-block">
+                <h2 class="tm-block-title text-dark text-center">Payment Details</h2>
+                <h1 class="text-danger h2 text-center">
+                    <!-- <span class="text-dark ">Total Payment :</span> ₹{{revenue}} -->
+                </h1>
+                <canvas id="north-america-chart" class="mx-auto">></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+            <div class="bg-white tm-block">
+                <h2 class="tm-block-title text-dark text-center">Sales Details</h2>
+                <canvas id="lineChart">></canvas>
+            </div>
+        </div>
+        <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 tm-block-col">
+            <div class="bg-white tm-block">
+                <h2 class="tm-block-title text-dark text-center">User Status</h2>
+                <canvas id="doughnutChart" class="mx-auto">></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'custom_admin/js/jquery-3.3.1.min.js' %}"></script>
+<!-- https://jquery.com/download/ -->
+<script src="{% static 'custom_admin/js/moment.min.js' %}"></script>
+<!-- https://momentjs.com/ -->
+<script src="{% static 'custom_admin/js/Chart.min.js' %}"></script>
+<!-- http://www.chartjs.org/docs/latest/ -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    var data = {
+      labels: [
+        "Order Confirmed",
+        "Shipped",
+        "Out for delivery",
+        "Delivered",
+        "Cancelled",
+        "Returned",
+      ],
+      datasets: [
+        {
+          label: "# of Ordres",
+          data: [
+            "{{ordered}}",
+            "{{shipped}}",
+            "{{out_of_delivery}}",
+            "{{delivered}}",
+            "{{cancelled}}",
+            "{{returned}}",
+          ],
+          backgroundColor: [
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(255, 159, 64, 0.2)",
+          ],
+          borderColor: [
+            "rgba(54, 162, 235, 1)",
+            "rgba(255,99,132,1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(255, 159, 64, 1)",
+          ],
+          borderWidth: 1,
+          fill: true,
+        },
+      ],
+    };
+  
+    var options = {
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
+          },
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      elements: {
+        point: {
+          radius: 0,
+        },
+      },
+    };
+  
+    // Get context with jQuery - using jQuery's .get() method.
+    if ($("#orderChart").length) {
+      var barChartCanvas = $("#orderChart").get(0).getContext("2d");
+      // This will get the first returned node in the jQuery collection.
+      var barChart = new Chart(barChartCanvas, {
+        type: "bar",
+        data: data,
+        options: options,
+      });
+    }
+  </script>
+  
+  <script>
+    if ($("#north-america-chart").length) {
+      var areaData = {
+        labels: ["PayPal", "Cash on delivery"],
+        datasets: [
+          {
+            data: ["{{paypal_orders}}", "{{cash_on_delivery_count}}"],
+            backgroundColor: ["#4B49AC", "#FFC100", "#248AFD"],
+            borderColor: "rgba(0,0,0,0)",
+          },
+        ],
+      };
+      var areaOptions = {
+        responsive: true,
+        maintainAspectRatio: true,
+        segmentShowStroke: false,
+        cutoutPercentage: 78,
+        elements: {
+          arc: {
+            borderWidth: 10,
+          },
+        },
+        legend: {
+          display: false,
+        },
+        tooltips: {
+          enabled: true,
+        },
+        legendCallback: function (chart) {
+          var text = [];
+          text.push('<div class="report-chart">');
+          text.push(
+            '<div class="d-flex justify-content-between mx-4 mx-xl-5 mt-3"><div class="d-flex align-items-center"><div class="mr-3" style="width:20px; height:20px; border-radius: 50%; background-color: ' +
+              chart.data.datasets[0].backgroundColor[0] +
+              '"></div><p class="mb-0">PayPal Sales</p></div>'
+          );
+          text.push(
+            '<p class="mb-0 mr-auto ml-4" style:"margin-left:5px" >{{paypal_orders}}</p>'
+          );
+          text.push("</div>");
+          text.push(
+            '<div class="d-flex justify-content-between mx-4 mx-xl-5 mt-3"><div class="d-flex align-items-center"><div class="mr-3" style="width:20px; height:20px; border-radius: 50%; background-color: ' +
+              chart.data.datasets[0].backgroundColor[1] +
+              '"></div><p class="mb-0">RazorPay Sales</p></div>'
+          );
+          text.push('<p class="mb-0 mr-auto ml-4">{{razorpay_orders}}</p>');
+          text.push("</div>");
+          text.push(
+            '<div class="d-flex justify-content-between mx-4 mx-xl-5 mt-3"><div class="d-flex align-items-center"><div class="mr-3" style="width:20px; height:20px; border-radius: 50%; background-color: ' +
+              chart.data.datasets[0].backgroundColor[2] +
+              '"></div><p class="mb-0">Cash On Delivery</p></div>'
+          );
+          text.push(
+            '<p class="mb-0 mr-auto ml-3">{{cash_on_delivery_count}}</p>'
+          );
+          text.push("</div>");
+          text.push("</div>");
+          return text.join("");
+        },
+      };
+      var northAmericaChartPlugins = {
+        beforeDraw: function (chart) {
+          var width = chart.chart.width,
+            height = chart.chart.height,
+            ctx = chart.chart.ctx;
+  
+          ctx.restore();
+          var fontSize = 3.125;
+          ctx.font = "500 " + fontSize + "em sans-serif";
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = "#13381B";
+  
+          var text = "{{total_payment_count}}",
+            textX = Math.round((width - ctx.measureText(text).width) / 2),
+            textY = height / 2;
+  
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        },
+      };
+      var northAmericaChartCanvas = $("#north-america-chart")
+        .get(0)
+        .getContext("2d");
+      var northAmericaChart = new Chart(northAmericaChartCanvas, {
+        type: "doughnut",
+        data: areaData,
+        options: areaOptions,
+        plugins: northAmericaChartPlugins,
+      });
+      document.getElementById("north-america-legend").innerHTML =
+        northAmericaChart.generateLegend();
+    }
+  </script>
+  
+  <script>
+    var doughnutPieData = {
+      datasets: [
+        {
+          data: ["{{blocked_user}}", "{{unblocked_user}}"],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.5)",
+            "rgba(54, 162, 235, 0.5)",
+            "rgba(255, 206, 86, 0.5)",
+            "rgba(75, 192, 192, 0.5)",
+            "rgba(153, 102, 255, 0.5)",
+            "rgba(255, 159, 64, 0.5)",
+          ],
+          borderColor: [
+            "rgba(255,99,132,1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(255, 159, 64, 1)",
+          ],
+        },
+      ],
+  
+      // These labels appear in the legend and in the tooltips when hovering different arcs
+      labels: ["Blocked Users", "Unblocked Users"],
+    };
+    var doughnutPieOptions = {
+      responsive: true,
+      animation: {
+        animateScale: true,
+        animateRotate: true,
+      },
+    };
+    if ($("#doughnutChart").length) {
+      var doughnutChartCanvas = $("#doughnutChart").get(0).getContext("2d");
+      var doughnutChart = new Chart(doughnutChartCanvas, {
+        type: "doughnut",
+        data: doughnutPieData,
+        options: doughnutPieOptions,
+      });
+    }
+  </script>
+  
+  <script>
+    var data = {
+      labels: [
+        "{{day_5_name}}",
+        "{{day_4_name}}",
+        "{{day_3_name}}",
+        "{{day_2_name}}",
+        "{{yesterday}}",
+        "{{today}}",
+      ],
+      datasets: [
+        {
+          label: "# Sales",
+          data: [
+            "{{day_5}}",
+            "{{day_4}}",
+            "{{day_3}}",
+            "{{day_2}}",
+            "{{yester_day_sale}}",
+            "{{today_sale}}",
+          ],
+          backgroundColor: [
+            "rgba(255, 99, 132, 0.2)",
+            "rgba(54, 162, 235, 0.2)",
+            "rgba(255, 206, 86, 0.2)",
+            "rgba(75, 192, 192, 0.2)",
+            "rgba(153, 102, 255, 0.2)",
+            "rgba(255, 159, 64, 0.2)",
+          ],
+          borderColor: [
+            "rgba(255,99,132,1)",
+            "rgba(54, 162, 235, 1)",
+            "rgba(255, 206, 86, 1)",
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(255, 159, 64, 1)",
+          ],
+          borderWidth: 1,
+          fill: false,
+        },
+      ],
+    };
+  
+    var options = {
+      scales: {
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true,
+            },
+          },
+        ],
+      },
+      legend: {
+        display: false,
+      },
+      elements: {
+        point: {
+          radius: 0,
+        },
+      },
+    };
+  
+    if ($("#lineChart").length) {
+      var lineChartCanvas = $("#lineChart").get(0).getContext("2d");
+      var lineChart = new Chart(lineChartCanvas, {
+        type: "line",
+        data: data,
+        options: options,
+      });
+    }
+  </script>
+
+{% endblock %}

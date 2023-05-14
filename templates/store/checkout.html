@@ -1,0 +1,272 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block 'content' %}
+
+
+<section class="section-content padding-y bg">
+    <div class="container">
+
+        <!-- ============================ COMPONENT 1 ================================= -->
+
+
+
+
+        <div class="row">
+            <aside class="col-lg-6">
+                <div class="card">
+
+
+                    <div class="card-body">
+                        <h4 class="card-title mb-4">Billing Address</h4>
+                        <form action="{% url 'place_order'  %}" method="POST">
+                            {% csrf_token %}
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label for="">First Name</label>
+                                    <input type="text" name="first_name" class="form-control" required>
+                                </div>
+                                <div class="col form-group">
+                                    <label for="">Last Name</label>
+                                    <input type="text" name="last_name" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label for="">Email</label>
+                                    <input type="email" name="email" class="form-control" required>
+                                </div>
+                                <div class="col form-group">
+                                    <label for="">Phone Number</label>
+                                    <input type="text" name="phone" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label for="">Address Line 1</label>
+                                    <input type="text" name="address_line_1" class="form-control" required>
+                                </div>
+                                <div class="col form-group">
+                                    <label for="">Address Line 2</label>
+                                    <input type="text" name="address_line_2" class="form-control" required>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col form-group">
+                                    <label for="">City</label>
+                                    <input type="text" name="city" class="form-control" required>
+                                </div>
+                                <div class="col form-group">
+                                    <label for="">State</label>
+                                    <input type="text" name="state" class="form-control" required>
+                                </div>
+                                <div class="col form-group">
+                                    <label for="">Country</label>
+                                    <input type="text" name="country" class="form-control" required>
+                                </div>
+                            </div>
+                            <button type="submit" name="submit" class="btn btn-primary btn-block">PlaceOrder</button>
+
+                        </form><br>
+                        <a href="{% url 'myAddress'  %}" class="btn btn-primary btn-block">My Address</a>
+                     
+
+
+                </div> <!-- card.// -->
+
+            </aside> <!-- col.// -->
+            <aside class="col-lg-6">
+
+                <div class="card">
+                    <div class="card-body">
+
+                        <table class="table table-borderless table-shopping-cart">
+                            <thead class="text-muted">
+                                <tr class="small text-uppercase">
+                                    <th scope="col">Product</th>
+                                    <th scope="col" width="120">Quantity</th>
+                                    <th scope="col" width="120">Price</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    {% for cart_item in cart_items %}
+                                    <td>
+                                        <figure class="itemside align-items-center">
+                                            <div class="aside"><img src="{{ cart_item.product.Images.url }}"
+                                                    class="img-sm"></div>
+                                            <figcaption class="info">
+                                                <a href="{{ cart_item.product.get_url }}"
+                                                    class="title text-dark">{{cart_item.product.product_name }}</a>
+                                                <p class="text-muted small">{% if cart_item.variations.all %}
+                                                    {% for item in cart_item.variations.all %}
+                                                    {{ item.variation_category | capfirst }} : {{ item.variation_value |capfirst }} <br>
+                                                    {% endfor %}
+                                                    {% endif %}</p>
+                                            </figcaption>
+                                        </figure>
+                                    </td>
+
+                                    <td>
+                                        <!-- col.// -->
+                                        <label for="">{{ cart_item.quantity }}</label>
+                                    </td>
+                                    <td>
+                                        <div class="price-wrap">
+                                            <var class="price">${{ cart_item.sub_total }}</var>
+                                            <small class="text-muted"> $ {{ cart_item.product.price }} each </small>
+                                        </div> <!-- price-wrap .// -->
+                                    </td>
+
+                                </tr>
+
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="row ">
+                            <div>
+                                <div class="col-12 col-md-4 ms-3">
+                                    <div class="shoping__continue mb-4" style="margin-left: -15px;">
+                                        <div class="shoping__discount">
+                                            <h6 class="text-center">Discount Codes</h6>
+                                            <form id="coupon_form">
+                                                <input type="text" id="coupon_data"
+                                                    placeholder="Enter your coupon code">
+                                                    <br>
+                                                <button type="submit" class="site-btn btn-primary m-3">APPLY COUPON</button>
+
+                                            </form>
+                                        </div>
+                                        <p class="text-danger mt-3" id="output"></p>
+                                    </div>
+
+                                    <p class="text-danger mt-3" id="output"></p>
+                                </div>
+                            </div>
+
+                            {% if coupons %}
+                            <!-- <h5>Available Coupons:</h5> -->
+                            <div class="accordion" id="accordionExample">
+
+                                {% for item in coupons %}
+                                <div class="accordion-item" style="width:350px">
+                                    <h2 class="accordion-header" id="headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#collapseOne" aria-expanded="false"
+                                            aria-controls="collapseOne">
+                                            <span class="text-dark">{{forloop.counter}}.</span> <b>-{{item.coupon.discount}}% Off</b>
+                                        </button>
+                                    </h2>
+                                    <div id="collapseOne" class="accordion-collapse collapse "aria-labelledby="headingOne"
+                                     data-bs-parent="#accordionExample">
+                                        <div class="accordion-body">
+                                            <p><b>*</b>Applicable only for order price more than <b>₹{{item.coupon.min_value}}\-</b></p>
+                                            <span class="ml-3">Coupon Code: <b class="text-danger">{{item.coupon.code}}</b></span>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+
+
+                            </div>
+                            {% endif %}
+
+                        </div>
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-12 col-md-12 col-lg-12"
+                                    style="display: flex;align-items: center;justify-content: end;">
+                                    <div class="card" style="width:50%">
+                                        <h5 class="text-center">Your Order</h5>
+                                        <div class="text-center">
+                                            <ul class="list list_2">
+                                                <li>
+                                                    <a href="#">Net total <span>₹{{total}}</span></a>
+                                                </li>
+                                                <li>
+                                                    <a href="#">tax <span>₹{{tax}}</span></a>
+                                                </li>
+                                               
+                                                <li>
+                                                    <a href="#">Grand total <span
+                                                            id='grand_total'>₹{{grand_total}}</span></a>
+                                                    <input type="text" name="coupon" id="coupon_code1"
+                                                        style="display: none;">
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- <button type="submit" name="submit"
+                                    class="btn btn-primary btn-block">PlaceOrder</button>
+                                <a href="{% url 'store'  %}" class="btn btn-light btn-block">Continue Shopping</a> -->
+                                </form>
+                            </div> <!-- card-body.// -->
+                        </div> <!-- card.// -->
+
+
+            </aside> <!-- col.// -->
+
+
+        </div> <!-- row.// -->
+
+
+        <!-- ============================ COMPONENT 1 END .// ================================= -->
+
+    </div> <!-- container .//  -->
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"
+    integrity="sha512-aVKKRRi/Q/YV+4mjoKBsE4x3H+BkegoM/em46NNlCqNTmUYADjBbeNefNxYV7giUp0VxICtqdrbqU7iVaeZNXA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    $('#coupon_form').on('submit', function (e) {
+
+        e.preventDefault();
+
+        $.ajax({
+            type: "POST",
+            url: "{% url 'coupons' %}",
+            data: {
+                coupon: $('#coupon_data').val(),
+                grand_total: '{{grand_total}}',
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+                dataType: "json",
+
+            },
+
+            success: function (data) {
+                $('#output').html(data.msg) /* response message */
+                $('#grand_total').text('₹' + data.grand_total)
+                if (data.coupon_discount > 0) {
+                    $('#coupon_block').show()
+                    $('#accordionExample').hide()
+                }
+                $('#coupon_discount').html(data.coupon_discount)
+                $('#coupon_code').html(data.coupon_code)
+                $('#coupon_code1').val(data.coupon_code)
+
+
+            },
+
+            failure: function () {
+
+            }
+
+
+        });
+
+
+    });  
+</script>
+<!-- ========================= SECTION CONTENT END// ========================= -->
+</body>
+
+</html>
+
+{% endblock %}
