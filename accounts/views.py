@@ -113,9 +113,9 @@ def login(request):
 
                 auth.login(request, user)
                 # messages.success(request, 'Successfully logged in!')
-                return redirect('home')
+                return render(request, 'home.html')
                 url = request.META.get('HTTP_REFERER')
-                
+
                 try:
                     query = requests.utils.urlparse(url).query
 
@@ -323,23 +323,21 @@ def order_detail(request, order_id):
         'subtotal': subtotal,
 
     }
-    return render(request, 'accounts/order_detail.html',context)
-
-
+    return render(request, 'accounts/order_detail.html', context)
 
 
 @login_required(login_url='login')
 def myAddress(request):
-  current_user = request.user
-  address = Address.objects.filter(user=current_user)
-  paginator = Paginator(address,3)
-  page= request.GET.get('page')
-  paged_address = paginator.get_page(page)
-  
-  context = {
-    'address':paged_address,
-  }
-  return render(request, 'accounts/myAddress.html', context)
+    current_user = request.user
+    address = Address.objects.filter(user=current_user)
+    paginator = Paginator(address, 3)
+    page = request.GET.get('page')
+    paged_address = paginator.get_page(page)
+
+    context = {
+        'address': paged_address,
+    }
+    return render(request, 'accounts/myAddress.html', context)
 
 
 @login_required(login_url='login')
