@@ -112,8 +112,10 @@ def login(request):
                 request.session['email'] = email
 
                 auth.login(request, user)
-                messages.success(request, 'Successfully logged in!')
+                # messages.success(request, 'Successfully logged in!')
+                return redirect('home')
                 url = request.META.get('HTTP_REFERER')
+                
                 try:
                     query = requests.utils.urlparse(url).query
 
